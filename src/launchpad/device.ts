@@ -1,6 +1,7 @@
 import {Input, Output} from 'webmidi'
 
 import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
+import {toNote, toPos} from './conversion'
 
 import {
   FlashSpec,
@@ -32,6 +33,10 @@ export class Launchpad {
 
   // Has the launchpad module been initialized?
   initialized = false
+
+  // Convert between note value and button position
+  toNote = toNote
+  toPos = toPos
 
   /**
    * Event listeners for the launchpad.

@@ -33,8 +33,8 @@ function buildMapper(): [MapperGrid, MapperGrid] {
 // Exports the note value to position map, and vice-versa.
 export const [noteToPosMap, posToNoteMap] = buildMapper()
 
-// Converts the note value to pad position
-export const toID = (note: number) => noteToPosMap[note]
+// Converts the note value to button position
+export const toPos = (note: number) => noteToPosMap[note]
 
-// Converts the pad position to note value
+// Converts the button position to note value
 export const toNote = (pos: number) => posToNoteMap[pos]

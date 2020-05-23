@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-import {Card} from '../ui/Card'
+import {Launchpad} from '../launchpad/device'
 
 const Container = styled.div`
   display: grid;
@@ -15,8 +15,9 @@ const Container = styled.div`
   background: #f1f3f5;
 `
 
-export const App = () => (
-  <Container>
-    <Card>LaunchBoard</Card>
-  </Container>
-)
+let device = new Launchpad()
+window.device = device
+
+export function App() {
+  return <Container>Launchpad Controller.</Container>
+}
