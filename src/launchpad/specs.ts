@@ -1,41 +1,20 @@
 import {range} from './utils'
 
-import {Spec, InputGrid} from '../types/specs'
+import {DisplayTrait, Spec, InputGrid} from '../types/specs'
 
 // Fixed-color lights.
-export const Color = (color: number) => [0, color % 128]
+export const Color = (color: number): DisplayTrait => [0, color % 128]
 
 // Flashing lights.
-export const Flash = (A: number, B: number) => [1, A % 128, B % 128]
+export const Flash = (A: number, B: number): DisplayTrait => [1, A % 128, B % 128]
 
 // Pulsing lights.
-export const Pulse = (color: number) => [2, color % 128]
+export const Pulse = (color: number): DisplayTrait => [2, color % 128]
 
 // RGB lights.
 // prettier-ignore
-export const RGB = (r: number, g: number, b: number) =>
+export const RGB = (r: number, g: number, b: number): DisplayTrait =>
   [3, r % 128, g % 128, b % 128]
-
-/**
- * Specs are used for sending light change events
- * in bulk to the launchpad.
- */
-
-// Specs for fixed-color lights.
-export const ColorSpec = (note: number, color: number): Spec =>
-  convertToSpec(note, Color(color))
-
-// Specs for flashing lights.
-export const FlashSpec = (note: number, A: number, B: number): Spec =>
-  convertToSpec(note, Flash(A, B))
-
-// Specs for pulsing lights.
-export const PulseSpec = (note: number, color: number): Spec =>
-  convertToSpec(note, Pulse(color))
-
-// Specs for RGB lights.
-export const RGBSpec = (note: number, r: number, g: number, b: number): Spec =>
-  convertToSpec(note, RGB(r, g, b))
 
 /**
  * Builds the midi grid.
@@ -55,7 +34,7 @@ export function buildMidiGrid(): number[][] {
 
 export const midiGrid = buildMidiGrid()
 
-export function convertToSpec(note: number, trait: number[]): Spec {
+export function useTrait(note: number, trait: number[]): Spec {
   let type = trait.slice(0, 1)
   let options = trait.slice(1)
 
@@ -73,9 +52,9 @@ export function buildSpecFromGrid(grid: InputGrid): Spec[] {
       // If input is a number, parse as a simple color.
       // Otherwise, use the specified input as spec.
       if (typeof input === 'number') {
-        specs.push(ColorSpec(note, input))
+        specs.push(useTrait(note, Color(input)))
       } else if (Array.isArray(input)) {
-        specs.push(convertToSpec(note, input))
+        specs.push(useTrait(note, input))
       }
     }
   }

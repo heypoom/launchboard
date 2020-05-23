@@ -1,12 +1,11 @@
 import {Launchpad} from '../launchpad'
 import {ControlCodes} from '../launchpad/control-buttons'
 
-interface SlotConfig {
+import {ColorManager} from '../modules/colors'
+
+export interface SlotConfig {
   color: string
   sound: string
-  loop?: boolean
-  solo?: boolean
-  parallel?: boolean
 }
 
 export type SlotMapping = Record<number, SlotConfig>
@@ -17,15 +16,19 @@ export class Launchboard {
     RESET: ControlCodes.RECORD_ARM,
   }
 
-  // Options for the soundboard
+  // Options for the launchboard.
   options = {
-    SLOTS_SAVE_KEY: 'launchboard.slots',
+    CONFIG_KEY: 'launchboard.config',
   }
 
   // Slots to place the sound.
   slots: SlotMapping = {}
 
+  // Initialize an instance of the Launchpad controller.
   device = new Launchpad()
+
+  // Initialize an instance of the color manager.
+  colors = new ColorManager(this.device)
 
   /**
    * Event listener for when the light changes.
@@ -45,17 +48,19 @@ export class Launchboard {
 
   onTap(note: number, velocity: number) {}
 
-  setSlot(slot: number, config: SlotConfig) {}
+  setSlot(slot: number, config: SlotConfig) {
+    this.slots[slot] = config
+  }
 
   save() {
     const config = JSON.stringify(this.slots)
-    localStorage.setItem(this.options.SLOTS_SAVE_KEY, config)
+    localStorage.setItem(this.options.CONFIG_KEY, config)
 
     return config
   }
 
   load() {
-    const saves = localStorage.getItem('soundboard.config')
+    const saves = localStorage.getItem(this.options.CONFIG_KEY)
     if (!saves) return
 
     this.slots = JSON.parse(saves)

@@ -5,18 +5,16 @@ import {ControlCodes} from './control-buttons'
 import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
 
 import {
-  FlashSpec,
-  PulseSpec,
-  RGBSpec,
   Color,
   Flash,
   Pulse,
   RGB,
   buildSpecFromGrid,
   buildFillGrid,
+  useTrait,
 } from './specs'
 
-import {Spec, InputGrid} from '../types/specs'
+import {DisplayTrait, Spec, InputGrid} from '../types/specs'
 import {DeviceHandler, DeviceListeners} from '../types/midi'
 
 export class Launchpad {
@@ -189,7 +187,7 @@ export class Launchpad {
    * @param b second color
    */
   flash(n: number, a: number, b: number) {
-    this.batch([FlashSpec(n, a, b)])
+    this.display(n, Flash(a, b))
   }
 
   /**
@@ -201,7 +199,7 @@ export class Launchpad {
    * @param b blue (0 - 127)
    */
   rgb(n: number, r: number, g: number, b: number) {
-    this.batch([RGBSpec(n, r, g, b)])
+    this.display(n, RGB(r, g, b))
   }
 
   /**
@@ -211,7 +209,7 @@ export class Launchpad {
    * @param color
    */
   pulse(n: number, color: number) {
-    this.batch([PulseSpec(n, color)])
+    this.display(n, Pulse(color))
   }
 
   /**
@@ -224,6 +222,16 @@ export class Launchpad {
     for (let spec of specs) payload = [...payload, ...spec]
 
     this.cmd(3, ...payload)
+  }
+
+  /**
+   * Display the display trait
+   *
+   * @param note
+   * @param trait
+   */
+  display(note: number, trait: DisplayTrait) {
+    this.batch([useTrait(note, trait)])
   }
 
   /**
