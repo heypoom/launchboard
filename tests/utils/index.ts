@@ -1,1 +1,0 @@
-export const mockDate = new Date(2019, 5, 20, 23, 58, 0)
