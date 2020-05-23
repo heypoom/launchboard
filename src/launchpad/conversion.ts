@@ -34,7 +34,7 @@ function buildMapper(): [MapperGrid, MapperGrid] {
 export const [noteToPosMap, posToNoteMap] = buildMapper()
 
 // Converts the note value to button position
-export const toPos = (note: number) => noteToPosMap[note]
+export const toSlot = (note: number) => noteToPosMap[note]
 
 // Converts the button position to note value
 export const toNote = (pos: number) => posToNoteMap[pos]

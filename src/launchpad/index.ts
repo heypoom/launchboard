@@ -1,6 +1,6 @@
 import {Input, Output} from 'webmidi'
 
-import {toNote, toPos} from './conversion'
+import {toNote, toSlot} from './conversion'
 import {ControlCodes} from './controls'
 import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
 
@@ -39,7 +39,7 @@ export class Launchpad {
 
   // Convert between note value and button position.
   toNote = toNote
-  toPos = toPos
+  toSlot = toSlot
 
   // Building blocks for grid payload.
   Color = Color

@@ -16,8 +16,12 @@ const Container = styled.div`
 `
 
 let board = new Launchboard()
+
 window.board = board
 window.device = board.device
+window.sounds = board.sounds
+window.colors = board.colors
+window.animator = board.animator
 
 export function App() {
   return <Container>Launchpad Controller.</Container>

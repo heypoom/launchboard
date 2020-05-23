@@ -2,8 +2,9 @@ import {SoundManager, SoundMapping} from './sounds'
 import {ColorManager, ColorMapping} from './colors'
 
 import {Launchpad} from '../launchpad'
-import {toPos} from '../launchpad/conversion'
+import {toSlot} from '../launchpad/conversion'
 import {ControlCodes} from '../launchpad/controls'
+import {Animator} from './animator'
 
 export interface SlotConfig {
   color: string
@@ -16,6 +17,7 @@ export interface SaveConfig {
   slots: SlotMapping
   colors: ColorMapping
   sounds: SoundMapping
+  frames: number[][]
 }
 
 export class Launchboard {
@@ -35,11 +37,14 @@ export class Launchboard {
   // Initialize an instance of the Launchpad controller.
   device = new Launchpad()
 
-  // Initialize an instance of the color manager.
+  // Manages the device and web interface color.
   colors = new ColorManager(this.device)
 
-  // Initialize an instance of the sound manager.
+  // Manages the audio playback.
   sounds = new SoundManager()
+
+  // Manages the animation creation and playback.
+  animator = new Animator(this.device, this.colors)
 
   constructor() {
     this.setup()
@@ -55,10 +60,10 @@ export class Launchboard {
   onLightChange = (position: number, color: string) => {}
 
   async setup() {
+    this.device.on('padTouch', this.onTap.bind(this))
+
     this.device.on('ready', () => {
       this.device.fill()
-      this.device.on('padTouch', this.onTap.bind(this))
-
       this.load()
     })
 
@@ -71,13 +76,13 @@ export class Launchboard {
   }
 
   onTap(note: number) {
-    let pos = toPos(note)
+    let slot = toSlot(note)
 
-    let slot = this.slots[pos]
-    if (!slot) return
+    let config = this.slots[slot]
+    if (!config) return
 
-    this.colors.apply(pos, 'red')
-    this.sounds.play(slot.sound)
+    this.colors.apply(slot, 'red')
+    this.sounds.play(config.sound)
   }
 
   setSlot(slot: number, config: SlotConfig) {
@@ -101,6 +106,7 @@ export class Launchboard {
       slots: this.slots,
       colors: this.colors.toJS(),
       sounds: this.sounds.toJS(),
+      frames: this.animator.frames,
     }
 
     const config = JSON.stringify(saveConfig)
@@ -116,17 +122,18 @@ export class Launchboard {
     const config = JSON.parse(saves) as SaveConfig
     if (!config) return
 
-    const {slots, colors, sounds} = config
+    const {slots, colors, sounds, frames} = config
 
     // Initializes the colors and sounds.
     if (colors) this.colors.replace(colors)
-    if (sounds) this.sounds.replace(sounds)
+    // if (sounds) this.sounds.replace(sounds)
+    if (frames) this.animator.load(frames)
 
     // Invoke setSlot for each slots to initialize their sounds and animations
     if (slots) {
-      Object.entries(slots).forEach(([slot, config]) => {
-        this.setSlot(Number(slot), config)
-      })
+      // Object.entries(slots).forEach(([slot, config]) => {
+      //   this.setSlot(Number(slot), config)
+      // })
     }
   }
 }

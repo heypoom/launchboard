@@ -1,0 +1,122 @@
+import {ColorManager} from './colors'
+
+import {Launchpad} from '../launchpad'
+import {range} from '../launchpad/utils'
+import {useTrait} from '../launchpad/specs'
+import {toNote, toSlot} from '../launchpad/conversion'
+
+type Scene = number[]
+
+const blank = (): Scene => range(0, 64).map(() => 0)
+
+export class Animator {
+  scene: Scene = blank()
+
+  currentFrame = 0
+  frames: Scene[] = []
+
+  device: Launchpad
+  colors: ColorManager
+
+  palette = ['none', 'blue', 'pink', 'yellow']
+
+  constructor(device: Launchpad, colors: ColorManager) {
+    this.device = device
+    this.colors = colors
+
+    this.device.on('padTouch', this.onTap.bind(this))
+  }
+
+  onColorChange = (pos: number, color: string) => {}
+
+  onTap = (note: number) => {
+    let slot = toSlot(note)
+
+    let color = this.scene[slot] || 0
+    color = (color + 1) % this.palette.length
+
+    this.scene[slot] = color
+    this.colors.apply(slot, this.palette[color])
+  }
+
+  render(scene = this.scene) {
+    let specs = []
+
+    for (let slot = 1; slot <= 64; slot++) {
+      let cid = scene[slot]
+      let color = this.palette[cid]
+      if (!color) continue
+
+      let {web, device} = this.colors.get(color)
+
+      let spec = useTrait(toNote(slot), device)
+      specs.push(spec)
+
+      this.onColorChange(slot, web)
+    }
+
+    this.device.batch(specs)
+  }
+
+  save() {
+    this.frames.push([...this.scene])
+    this.currentFrame = this.frames.length - 1
+
+    this.render()
+  }
+
+  updateScene() {
+    let scene = this.frames[this.currentFrame]
+    if (scene) this.scene = scene
+
+    this.render()
+  }
+
+  timer?: NodeJS.Timeout
+  fps = 5
+
+  play() {
+    this.timer = setInterval(
+      this.onTick.bind(this),
+      Math.floor(1000 / this.fps),
+    )
+  }
+
+  onTick() {
+    this.currentFrame++
+    if (this.currentFrame > this.frames.length) this.currentFrame = 0
+
+    this.updateScene()
+  }
+
+  stop() {
+    if (this.timer) clearInterval(this.timer)
+  }
+
+  next() {
+    this.currentFrame++
+
+    if (!this.frames[this.currentFrame]) return this.save()
+
+    this.updateScene()
+  }
+
+  prev() {
+    this.currentFrame--
+    if (this.currentFrame < 0) this.currentFrame = 0
+
+    this.updateScene()
+  }
+
+  load(frames: number[][]) {
+    this.frames = frames
+    this.currentFrame = 0
+
+    this.updateScene()
+  }
+
+  clear() {
+    this.scene = blank()
+    this.device.fill(0)
+  }
+}
