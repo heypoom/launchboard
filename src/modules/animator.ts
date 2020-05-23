@@ -3,6 +3,7 @@ import {ColorManager} from './colors'
 import {Launchpad} from '../launchpad'
 import {range} from '../launchpad/utils'
 import {useTrait} from '../launchpad/specs'
+import {ControlCodes} from '../launchpad/controls'
 import {toNote, toSlot} from '../launchpad/conversion'
 
 type Scene = number[]
@@ -20,16 +21,37 @@ export class Animator {
 
   palette = ['none', 'blue', 'pink', 'yellow']
 
+  keymap = {
+    PREV: ControlCodes.LEFT,
+    NEXT: ControlCodes.RIGHT,
+    PLAY: ControlCodes.VOLUME,
+  }
+
+  controls = {
+    [this.keymap.PREV]: this.prev,
+    [this.keymap.NEXT]: this.next,
+    [this.keymap.PLAY]: this.play,
+  }
+
   constructor(device: Launchpad, colors: ColorManager) {
     this.device = device
     this.colors = colors
 
+    this.device.on('ready', this.onReady.bind(this))
     this.device.on('padTouch', this.onTap.bind(this))
+    this.device.on('controlChange', this.onControl.bind(this))
   }
 
   onColorChange = (pos: number, color: string) => {}
 
-  onTap = (note: number) => {
+  onReady() {
+    this.device.light(this.keymap.PLAY, 17)
+
+    this.device.light(this.keymap.PREV, 33)
+    this.device.light(this.keymap.NEXT, 33)
+  }
+
+  onTap(note: number) {
     let slot = toSlot(note)
 
     let color = this.scene[slot] || 0
@@ -37,6 +59,13 @@ export class Animator {
 
     this.scene[slot] = color
     this.colors.apply(slot, this.palette[color])
+  }
+
+  onControl(note: number, velocity: number) {
+    if (velocity < 127) return
+
+    let handler = this.controls[note]
+    if (handler) handler.bind(this)()
   }
 
   render(scene = this.scene) {
@@ -73,9 +102,17 @@ export class Animator {
   }
 
   timer?: NodeJS.Timeout
-  fps = 5
+  fps = 10
+  isPlaying = false
 
   play() {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = undefined
+
+      return
+    }
+
     this.timer = setInterval(
       this.onTick.bind(this),
       Math.floor(1000 / this.fps),
@@ -87,10 +124,6 @@ export class Animator {
     if (this.currentFrame > this.frames.length) this.currentFrame = 0
 
     this.updateScene()
-  }
-
-  stop() {
-    if (this.timer) clearInterval(this.timer)
   }
 
   next() {
