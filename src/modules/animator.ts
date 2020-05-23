@@ -87,13 +87,6 @@ export class Animator {
     this.device.batch(specs)
   }
 
-  save() {
-    this.frames.push([...this.scene])
-    this.currentFrame = this.frames.length - 1
-
-    this.render()
-  }
-
   updateScene() {
     let scene = this.frames[this.currentFrame]
     if (scene) this.scene = scene
@@ -126,19 +119,27 @@ export class Animator {
     this.updateScene()
   }
 
-  next() {
-    this.currentFrame++
+  save() {
+    this.frames[this.currentFrame] = [...this.scene]
+  }
 
-    if (!this.frames[this.currentFrame]) return this.save()
+  go(offset: number = 1) {
+    this.save()
+
+    this.currentFrame += offset
+    if (this.currentFrame < 0) this.currentFrame = this.frames.length - 1
+
+    console.log('At frame', this.currentFrame)
 
     this.updateScene()
   }
 
-  prev() {
-    this.currentFrame--
-    if (this.currentFrame < 0) this.currentFrame = 0
+  next() {
+    this.go(1)
+  }
 
-    this.updateScene()
+  prev() {
+    this.go(-1)
   }
 
   load(frames: number[][]) {
