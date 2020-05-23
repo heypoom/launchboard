@@ -55,11 +55,8 @@ function convertToSpec(note: number, spec: Spec): Spec {
 export function buildSpecFromGrid(grid: InputGrid): Spec[] {
   const specs: Spec[] = []
 
-  for (let row in grid) {
-    for (let col in grid[row]) {
-      let x = Number(col)
-      let y = Number(row)
-
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
       let input = grid[y][x]
       const note = midiGrid[y][x]
 

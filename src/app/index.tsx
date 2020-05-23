@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 
-import {Launchpad} from '../launchpad/device'
+import {Launchpad} from '../launchpad'
 
 const Container = styled.div`
   display: grid;
