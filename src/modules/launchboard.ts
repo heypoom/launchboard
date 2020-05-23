@@ -115,8 +115,8 @@ export class Launchboard {
     return config
   }
 
-  load() {
-    const saves = localStorage.getItem(this.options.CONFIG_KEY)
+  load(saveConfig?: string) {
+    const saves = saveConfig || localStorage.getItem(this.options.CONFIG_KEY)
     if (!saves) return
 
     const config = JSON.parse(saves) as SaveConfig
