@@ -9,12 +9,14 @@ export interface ColorConfig {
   device: DisplayTrait
 }
 
+export type ColorMapping = Record<string, ColorConfig>
+
 /**
  * ColorManager manages the colors to display in the launchpad and web interface.
  */
 export class ColorManager {
   device: Launchpad
-  colors: Record<string, ColorConfig> = {}
+  colors: ColorMapping = {}
 
   constructor(device: Launchpad) {
     this.device = device
@@ -48,6 +50,12 @@ export class ColorManager {
     this.colors[name] = colorConfig
   }
 
+  /**
+   * Applies the color at a specific button
+   *
+   * @param pos button position of the launchpad
+   * @param color predefined color name
+   */
   apply(pos: number, color: string) {
     let config = this.get(color)
     if (!config) return
@@ -57,5 +65,17 @@ export class ColorManager {
 
     // Update the color on the web interface.
     this.onColorChange(pos, config.web)
+  }
+
+  replace(mapping: ColorMapping) {
+    this.colors = mapping
+  }
+
+  toJS() {
+    return this.colors
+  }
+
+  toString() {
+    return JSON.stringify(this.colors)
   }
 }

@@ -1,7 +1,7 @@
 import {Launchpad} from '../launchpad'
 import {ControlCodes} from '../launchpad/control-buttons'
 
-import {ColorManager} from '../modules/colors'
+import {ColorManager, ColorMapping} from '../modules/colors'
 
 export interface SlotConfig {
   color: string
@@ -9,6 +9,11 @@ export interface SlotConfig {
 }
 
 export type SlotMapping = Record<number, SlotConfig>
+
+export interface SaveConfig {
+  slots: SlotMapping
+  colors: ColorMapping
+}
 
 export class Launchboard {
   // Control key bindings for the launchpad.
@@ -30,6 +35,10 @@ export class Launchboard {
   // Initialize an instance of the color manager.
   colors = new ColorManager(this.device)
 
+  constructor() {
+    this.setup()
+  }
+
   /**
    * Event listener for when the light changes.
    * Override this.
@@ -43,6 +52,8 @@ export class Launchboard {
     this.device.on('ready', () => {
       this.device.fill()
       this.device.on('padTouch', this.onTap.bind(this))
+
+      this.load()
     })
   }
 
@@ -50,10 +61,26 @@ export class Launchboard {
 
   setSlot(slot: number, config: SlotConfig) {
     this.slots[slot] = config
+
+    if (config.color) this.colors.apply(slot, config.color)
+  }
+
+  add(
+    slot: number,
+    color: string,
+    sound: string,
+    options: Partial<SlotConfig>,
+  ) {
+    this.setSlot(slot, {color, sound, ...options})
   }
 
   save() {
-    const config = JSON.stringify(this.slots)
+    const saveConfig: SaveConfig = {
+      slots: this.slots,
+      colors: this.colors.toJS(),
+    }
+
+    const config = JSON.stringify(saveConfig)
     localStorage.setItem(this.options.CONFIG_KEY, config)
 
     return config
@@ -63,11 +90,17 @@ export class Launchboard {
     const saves = localStorage.getItem(this.options.CONFIG_KEY)
     if (!saves) return
 
-    this.slots = JSON.parse(saves)
+    const config = JSON.parse(saves) as SaveConfig
+    if (!config) return
+
+    const {slots, colors} = config
+    if (colors) this.colors.replace(colors)
 
     // Invoke setSlot for each slots to initialize their sounds and animations
-    Object.entries(this.slots).forEach(([slot, config]) => {
-      this.setSlot(Number(slot), config)
-    })
+    if (slots) {
+      Object.entries(slots).forEach(([slot, config]) => {
+        this.setSlot(Number(slot), config)
+      })
+    }
   }
 }
