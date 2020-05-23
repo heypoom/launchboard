@@ -1,7 +1,8 @@
 import {Input, Output} from 'webmidi'
 
-import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
 import {toNote, toPos} from './conversion'
+import {ControlCodes} from './control-buttons'
+import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
 
 import {
   FlashSpec,
@@ -47,6 +48,9 @@ export class Launchpad {
   Flash = Flash
   Pulse = Pulse
   RGB = RGB
+
+  // Note values for the control buttons
+  ControlCodes = ControlCodes
 
   /**
    * Event listeners for the launchpad.
