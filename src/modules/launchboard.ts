@@ -136,4 +136,10 @@ export class Launchboard {
       // })
     }
   }
+
+  loadRemote(url: string) {
+    fetch(url)
+      .then(r => r.text())
+      .then(this.load.bind(this))
+  }
 }
