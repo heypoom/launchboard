@@ -7,6 +7,10 @@ import {
   FlashSpec,
   PulseSpec,
   RGBSpec,
+  Color,
+  Flash,
+  Pulse,
+  RGB,
   buildSpecFromGrid,
   buildFillGrid,
 } from './specs'
@@ -34,9 +38,15 @@ export class Launchpad {
   // Has the launchpad module been initialized?
   initialized = false
 
-  // Convert between note value and button position
+  // Convert between note value and button position.
   toNote = toNote
   toPos = toPos
+
+  // Building blocks for grid payload.
+  Color = Color
+  Flash = Flash
+  Pulse = Pulse
+  RGB = RGB
 
   /**
    * Event listeners for the launchpad.

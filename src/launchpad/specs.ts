@@ -2,30 +2,40 @@ import {range} from './utils'
 
 import {Spec, InputGrid} from '../types/specs'
 
+// Fixed-color lights.
+export const Color = (color: number) => [0, color % 128]
+
+// Flashing lights.
+export const Flash = (A: number, B: number) => [1, A % 128, B % 128]
+
+// Pulsing lights.
+export const Pulse = (color: number) => [2, color % 128]
+
+// RGB lights.
+// prettier-ignore
+export const RGB = (r: number, g: number, b: number) =>
+  [3, r % 128, g % 128, b % 128]
+
 /**
  * Specs are used for sending light change events
  * in bulk to the launchpad.
  */
 
 // Specs for fixed-color lights.
-// prettier-ignore
 export const ColorSpec = (note: number, color: number): Spec =>
-  [0, note % 99, color % 128]
+  convertToSpec(note, Color(color))
 
 // Specs for flashing lights.
-// prettier-ignore
 export const FlashSpec = (note: number, A: number, B: number): Spec =>
-  [1, note % 99, A % 128, B % 128]
+  convertToSpec(note, Flash(A, B))
 
 // Specs for pulsing lights.
-// prettier-ignore
 export const PulseSpec = (note: number, color: number): Spec =>
-  [2, note % 99, color % 128]
+  convertToSpec(note, Pulse(color))
 
 // Specs for RGB lights.
-// prettier-ignore
 export const RGBSpec = (note: number, r: number, g: number, b: number): Spec =>
-  [3, note % 99, r % 128, g % 128, b % 128]
+  convertToSpec(note, RGB(r, g, b))
 
 /**
  * Builds the midi grid.
@@ -45,9 +55,9 @@ export function buildMidiGrid(): number[][] {
 
 export const midiGrid = buildMidiGrid()
 
-function convertToSpec(note: number, spec: Spec): Spec {
-  let type = spec.slice(0, 1)
-  let options = spec.slice(1)
+export function convertToSpec(note: number, trait: number[]): Spec {
+  let type = trait.slice(0, 1)
+  let options = trait.slice(1)
 
   return [...type, note, ...options] as Spec
 }
