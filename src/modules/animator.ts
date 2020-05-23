@@ -129,7 +129,7 @@ export class Animator {
     this.currentFrame += offset
     if (this.currentFrame < 0) this.currentFrame = this.frames.length - 1
 
-    console.log('At frame', this.currentFrame)
+    console.log('At frame', this.currentFrame, 'of', this.frames.length)
 
     this.updateScene()
   }
