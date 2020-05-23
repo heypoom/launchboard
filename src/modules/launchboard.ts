@@ -126,14 +126,14 @@ export class Launchboard {
 
     // Initializes the colors and sounds.
     if (colors) this.colors.replace(colors)
-    // if (sounds) this.sounds.replace(sounds)
+    if (sounds) this.sounds.replace(sounds)
     if (frames) this.animator.load(frames)
 
     // Invoke setSlot for each slots to initialize their sounds and animations
     if (slots) {
-      // Object.entries(slots).forEach(([slot, config]) => {
-      //   this.setSlot(Number(slot), config)
-      // })
+      Object.entries(slots).forEach(([slot, config]) => {
+        this.setSlot(Number(slot), config)
+      })
     }
   }
 
