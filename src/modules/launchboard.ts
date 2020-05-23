@@ -1,7 +1,9 @@
-import {Launchpad} from '../launchpad'
-import {ControlCodes} from '../launchpad/control-buttons'
+import {SoundManager, SoundMapping} from './sounds'
+import {ColorManager, ColorMapping} from './colors'
 
-import {ColorManager, ColorMapping} from '../modules/colors'
+import {Launchpad} from '../launchpad'
+import {toPos} from '../launchpad/conversion'
+import {ControlCodes} from '../launchpad/controls'
 
 export interface SlotConfig {
   color: string
@@ -13,6 +15,7 @@ export type SlotMapping = Record<number, SlotConfig>
 export interface SaveConfig {
   slots: SlotMapping
   colors: ColorMapping
+  sounds: SoundMapping
 }
 
 export class Launchboard {
@@ -35,6 +38,9 @@ export class Launchboard {
   // Initialize an instance of the color manager.
   colors = new ColorManager(this.device)
 
+  // Initialize an instance of the sound manager.
+  sounds = new SoundManager()
+
   constructor() {
     this.setup()
   }
@@ -55,14 +61,30 @@ export class Launchboard {
 
       this.load()
     })
+
+    this.sounds.onPlaybackEnd = slot => {
+      let config = this.slots[slot]
+      if (!config) return
+
+      this.colors.apply(slot, config.color)
+    }
   }
 
-  onTap(note: number, velocity: number) {}
+  onTap(note: number) {
+    let pos = toPos(note)
+
+    let slot = this.slots[pos]
+    if (!slot) return
+
+    this.colors.apply(pos, 'red')
+    this.sounds.play(slot.sound)
+  }
 
   setSlot(slot: number, config: SlotConfig) {
     this.slots[slot] = config
 
     if (config.color) this.colors.apply(slot, config.color)
+    if (config.sound) this.sounds.assign(slot, config.sound)
   }
 
   add(
@@ -78,6 +100,7 @@ export class Launchboard {
     const saveConfig: SaveConfig = {
       slots: this.slots,
       colors: this.colors.toJS(),
+      sounds: this.sounds.toJS(),
     }
 
     const config = JSON.stringify(saveConfig)
@@ -93,8 +116,11 @@ export class Launchboard {
     const config = JSON.parse(saves) as SaveConfig
     if (!config) return
 
-    const {slots, colors} = config
+    const {slots, colors, sounds} = config
+
+    // Initializes the colors and sounds.
     if (colors) this.colors.replace(colors)
+    if (sounds) this.sounds.replace(sounds)
 
     // Invoke setSlot for each slots to initialize their sounds and animations
     if (slots) {

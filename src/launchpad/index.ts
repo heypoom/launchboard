@@ -1,7 +1,7 @@
 import {Input, Output} from 'webmidi'
 
 import {toNote, toPos} from './conversion'
-import {ControlCodes} from './control-buttons'
+import {ControlCodes} from './controls'
 import {enableMidiWithSysEx, inputOf, outputOf} from './midi'
 
 import {
