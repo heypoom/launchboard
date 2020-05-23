@@ -216,7 +216,7 @@ export class Launchpad {
    * Lights up the pad with the specified solid color.
    *
    * @param note the note position on the launchpad
-   * @param color the color number between 0 - 255
+   * @param color the color number between 0 - 127
    */
   light(note: number, color: number) {
     if (!this.midiOut) return
