@@ -44,7 +44,9 @@ let Schema = {
 
 let timer: NodeJS.Timeout
 
-export let Board = model('Board', Schema)
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+export const Board = model('Board', Schema)
   .views(self => ({
     get uiScene() {
       return self.scene.map(s => s.ui)
@@ -106,6 +108,10 @@ export let Board = model('Board', Schema)
 
         this.playSound(config.sound.name)
       }
+
+      if (config.animation) {
+        this.triggerAnimation(config.animation.name)
+      }
     },
 
     playSound(sound: string) {},
@@ -163,30 +169,8 @@ export let Board = model('Board', Schema)
       self.frame?.replace(self.scene)
     },
 
-    playAnimation() {
-      if (self.isAnimating) {
-        self.isAnimating = false
-        clearInterval(timer)
-        return
-      }
-
-      let fps = 10
-
-      self.isAnimating = true
-
-      timer = setInterval(this.tick.bind(this), 1000 / fps)
-    },
-
-    tick() {
-      if (!self.frames) return
-
-      if (self.currentFrame > self.frames.length - 1) {
-        self.currentFrame = 0
-      }
-
-      this.syncFrameToScene()
-
-      self.currentFrame++
+    replaceScene(scene: any) {
+      self.scene.replace(scene)
     },
 
     nextFrame() {
@@ -204,6 +188,46 @@ export let Board = model('Board', Schema)
       self.currentFrame--
 
       this.syncFrameToScene()
+    },
+
+    async triggerAnimation(name = 'default') {
+      let animation = self.animations.get(name)
+      if (!animation) return
+
+      const {frames} = animation
+
+      for (let current = 0; current < frames.length; current++) {
+        const frame = frames[current]
+        this.replaceScene(frame)
+
+        await delay(1000 / animation.fps)
+      }
+    },
+
+    playAnimation() {
+      if (!self.animation) return
+
+      if (self.isAnimating) {
+        self.isAnimating = false
+        clearInterval(timer)
+        return
+      }
+
+      self.isAnimating = true
+
+      timer = setInterval(this.tick.bind(this), 1000 / self.animation.fps)
+    },
+
+    tick() {
+      if (!self.frames) return
+
+      if (self.currentFrame > self.frames.length - 1) {
+        self.currentFrame = 0
+      }
+
+      this.syncFrameToScene()
+
+      self.currentFrame++
     },
   }))
 
