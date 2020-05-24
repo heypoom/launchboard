@@ -134,8 +134,8 @@ export const Board = model('Board', Schema)
       key.color = color
     },
 
-    addAnimation(name: string = 'default') {
-      let animation = self.animations.put({name})
+    addAnimation(name: string = 'default', palette?: string[], fps?: number) {
+      let animation = self.animations.put({name, palette, fps})
 
       self.animation = animation
     },
