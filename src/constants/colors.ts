@@ -3,7 +3,7 @@ import {Color, RGB} from '../launchpad/specs'
 export const colors = {
   green: {
     name: 'green',
-    ui: 'green',
+    ui: '#2ecc71',
     device: Color(25),
   },
   red: {
@@ -13,7 +13,7 @@ export const colors = {
   },
   purple: {
     name: 'purple',
-    ui: 'purple',
+    ui: '#8e44ad',
     device: Color(49),
   },
   pink: {
