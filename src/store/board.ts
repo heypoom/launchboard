@@ -170,7 +170,7 @@ export let Board = model('Board', Schema)
         return
       }
 
-      let fps = 5
+      let fps = 10
 
       self.isAnimating = true
 
