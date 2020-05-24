@@ -31,7 +31,7 @@ export const colors = {
   },
   none: {
     name: 'none',
-    ui: 'transparent',
+    ui: '',
     device: [0, 0],
   },
 }

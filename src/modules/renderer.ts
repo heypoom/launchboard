@@ -8,7 +8,7 @@ export function renderOnDevice(scene: Color[], device: Launchpad): string[] {
   let specs = []
 
   for (let slot = 1; slot <= 64; slot++) {
-    let color = scene[slot]
+    let color = scene[slot - 1]
     if (!color) continue
 
     let {device} = color

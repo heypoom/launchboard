@@ -10,7 +10,7 @@ const Scene = array(reference(Color))
 
 const defaultPalette = ['none', 'blue', 'pink', 'yellow']
 
-const blankScene = range(0, 64).map(() => 'none')
+const blankScene = range(0, 63).map(() => 'none')
 
 /**
  * Animation defines the animation that can be triggered.

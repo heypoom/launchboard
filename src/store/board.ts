@@ -10,7 +10,7 @@ import {range} from '../launchpad/utils'
 
 const {model, map, array, reference, optional, maybeNull} = types
 
-const blankScene = range(0, 64).map(() => 'none')
+const blankScene = range(0, 63).map(() => 'none')
 
 interface SlotConfig {
   color?: string
@@ -69,6 +69,8 @@ export let Board = model('Board', Schema)
     },
 
     trigger(slot: string) {
+      console.log('Trigger at', slot)
+
       this.draw(slot)
 
       const config = self.slots.get(slot)
@@ -86,7 +88,7 @@ export let Board = model('Board', Schema)
       let color = self.colors.get(colorName)
       if (!color) return
 
-      self.scene[Number(slot)] = color
+      self.scene[Number(slot) - 1] = color
     },
 
     setKeybindColor(name: string, colorName: string) {
@@ -109,7 +111,7 @@ export let Board = model('Board', Schema)
 
       let palette = self.animation.palette
 
-      let color = self.scene[Number(slot)]
+      let color = self.scene[Number(slot) - 1]
       if (!color) return
 
       let id = (palette.indexOf(color) + 1) % palette.length
@@ -121,7 +123,7 @@ export let Board = model('Board', Schema)
     },
 
     clearScene() {
-      let empty = range(0, 64).map(() => 'none')
+      let empty = range(0, 63).map(() => 'none')
       self.scene.replace(empty)
     },
   }))

@@ -14,8 +14,8 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #2d2d30;
-  background: #f1f3f5;
+  color: #f1f3f5;
+  background: #161516;
 `
 
 const {Provider} = StoreContext
@@ -26,8 +26,6 @@ export function App() {
   return (
     <Provider value={store}>
       <Container>
-        <h1>Launchboard v1.0.1</h1>
-
         <BoardInterface />
       </Container>
     </Provider>

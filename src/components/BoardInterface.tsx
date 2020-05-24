@@ -4,17 +4,37 @@ import {useObserver} from 'mobx-react-lite'
 
 import {useBoard} from '../store'
 
+const Container = styled.div`
+  display: grid;
+  grid-template-rows: repeat(8, 80px);
+  grid-template-columns: repeat(8, 80px);
+  grid-gap: 20px;
+
+  padding: 100px 0;
+`
+
+let offColor = '#bdc3c7'
+
 const Button = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 80px;
+  height: 80px;
+  border: none;
+
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+
+  background: ${props => props.color || offColor};
 `
 
 export function BoardInterface() {
   const board = useBoard()
 
-  console.log('Use Board:', board)
+  const tap = (i: number) => board.trigger(String(i))
 
-  return useObserver(() => (<div>
-    {board.uiScene.}
-  </div>))
+  return useObserver(() => (
+    <Container>
+      {board.uiScene.map((color, i) => (
+        <Button key={i + 1} color={color} onClick={() => tap(i + 1)} />
+      ))}
+    </Container>
+  ))
 }
