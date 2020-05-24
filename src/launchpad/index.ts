@@ -262,3 +262,5 @@ export class Launchpad {
     this.grid(buildFillGrid(color))
   }
 }
+
+export const device = new Launchpad()

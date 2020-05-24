@@ -1802,6 +1802,13 @@
   resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-1.24.0.tgz#1620218d373031ce05e3818ad0ef0c0dd0d0a009"
   integrity sha512-OCTdVRQf/ge2ULlGqVKRI/HwyWoKpLV3ppLt6H27yzK/qdYNJ60Sz5tUxy3Jt1RD9K4Iz1tcDWPFJArBFZNAWQ==
 
+"@types/mobx-devtools-mst@^0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@types/mobx-devtools-mst/-/mobx-devtools-mst-0.9.7.tgz#e6a3159315f2e9a73de081a996abf59dbb4339a1"
+  integrity sha512-TepKZpjqOJJe0niMaxRliHESZn9/VJA4H3drtt1sIYxknHOuXqvuMCUNJzy7AaCJg3BFG9Qr3MiuXVtDfTP00g==
+  dependencies:
+    mobx-devtools-mst "*"
+
 "@types/mockdate@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mockdate/-/mockdate-2.0.0.tgz#aaf388a1ead3b0f5ed6dc1611956ea7b40a57d3c"
@@ -7717,6 +7724,21 @@ mkdirp@0.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@^0.5.3, mkdir
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+mobx-devtools-mst@*, mobx-devtools-mst@^0.9.22:
+  version "0.9.22"
+  resolved "https://registry.yarnpkg.com/mobx-devtools-mst/-/mobx-devtools-mst-0.9.22.tgz#51c7695064d78d31a9c416e7bc58c90a185575cc"
+  integrity sha512-Yi0zoZjy/HcpIYQSttJfzjP8sWvSDxwtemGB99wSvKCSITvWk0CRCeT149Ynhud6sJ9XUgZMdsSAd/kIuZ8vOQ==
+
+mobx-state-tree@^3.16.0:
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/mobx-state-tree/-/mobx-state-tree-3.16.0.tgz#814c5c87371ababc07d47bef3892ffa21d739e1d"
+  integrity sha512-3eB3/h611fMNu5tvs7I09Hw9Njd0inJzuJMKaY7l49zbNVV6g1kh/poCu1AHZCA/s91N1rq+2VTv9FPo7wyjdA==
+
+mobx@^5.15.4:
+  version "5.15.4"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.15.4.tgz#9da1a84e97ba624622f4e55a0bf3300fb931c2ab"
+  integrity sha512-xRFJxSU2Im3nrGCdjSuOTFmxVDGeqOHL+TyADCGbT0k4HHqGmx5u2yaHNryvoORpI4DfbzjJ5jPmuv+d7sioFw==
 
 mockdate@^2.0.2:
   version "2.0.5"
