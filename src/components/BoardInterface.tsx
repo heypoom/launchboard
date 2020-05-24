@@ -19,8 +19,10 @@ const Button = styled.button`
   width: 80px;
   height: 80px;
   border: none;
+  cursor: pointer;
 
   box-shadow: 0 0 25px ${props => props.color || 'rgba(255, 255, 255, 0.3)'};
+  border-radius: 4px;
 
   background: ${props => props.color || offColor};
 `
