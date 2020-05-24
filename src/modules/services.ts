@@ -6,6 +6,8 @@ import {SoundManager} from './sound-manager'
 import {BoardModel} from '../store/board'
 import {createStore, StoreModel} from '../store'
 import {save, load, loadRemote} from './save-manager'
+import {addMiddleware} from 'mobx-state-tree'
+import {SoundMiddleware} from './sound-middleware'
 
 // Return all the dependent singleton services.
 interface Services {
@@ -33,6 +35,9 @@ export function createServices(): Services {
   const device = new Launchpad()
   const deviceManager = new DeviceManager(device, store.board)
   const soundManager = new SoundManager(store)
+
+  // Sound Management Middleware
+  addMiddleware(store.board, SoundMiddleware(soundManager, store.board))
 
   // Window global for DevTools debugging.
   if (process.env.NODE_ENV === 'development') {

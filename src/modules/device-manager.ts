@@ -4,8 +4,9 @@ import {load} from './save-manager'
 import {renderOnDevice} from './renderer'
 
 import {Spec} from '../types/specs'
-import {Launchpad} from '../launchpad'
 import {BoardModel} from '../store/board'
+
+import {Launchpad} from '../launchpad'
 import {toSlot} from '../launchpad/conversion'
 
 /**

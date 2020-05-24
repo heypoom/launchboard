@@ -1,37 +1,39 @@
+import {Color, RGB} from '../launchpad/specs'
+
 export const colors = {
   green: {
     name: 'green',
     ui: 'green',
-    device: [0, 25],
+    device: Color(25),
   },
   red: {
     name: 'red',
-    ui: '#ff0000',
-    device: [0, 60],
+    ui: '#e74c3c',
+    device: Color(60),
   },
   purple: {
     name: 'purple',
     ui: 'purple',
-    device: [0, 49],
+    device: Color(49),
   },
   pink: {
     name: 'pink',
     ui: '#ff7ef8',
-    device: [3, 127, 0, 29],
+    device: RGB(127, 0, 29),
   },
   blue: {
     name: 'blue',
     ui: '#01dcfc',
-    device: [3, 0, 127, 119],
+    device: RGB(0, 127, 119),
   },
   yellow: {
     name: 'yellow',
-    ui: '#9b59b6',
-    device: [3, 127, 72, 0],
+    ui: '#f1c40f',
+    device: RGB(127, 72, 0),
   },
   none: {
     name: 'none',
     ui: '',
-    device: [0, 0],
+    device: Color(0),
   },
 }

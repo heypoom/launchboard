@@ -49,16 +49,9 @@ export let Board = model('Board', Schema)
       const config = self.slots.get(slot)
       if (!config) return
 
-      const {color, sound} = config
-      if (!color) return
-
-      this.setScene(slot, color.name)
-      if (!sound) return
-
-      this.setupPlaybackEnd(slot, sound.name, color.name)
+      const {color} = config
+      if (color) this.setScene(slot, color.name)
     },
-
-    setupPlaybackEnd: (slot: string, sound: string, color: string) => {},
 
     addColor(name: string, ui: string, deviceSpec: number[]) {
       self.colors.put(newColor(name, ui, deviceSpec))
@@ -69,20 +62,17 @@ export let Board = model('Board', Schema)
     },
 
     trigger(slot: string) {
-      console.log('Trigger at', slot)
-
-      this.draw(slot)
-
       const config = self.slots.get(slot)
-      if (!config) return
+      if (!config) return this.draw(slot)
 
-      const {sound} = config
-
-      if (sound) {
+      if (config.sound) {
         this.setScene(slot, 'red')
-        sound.play()
+
+        this.playSound(config.sound.name)
       }
     },
+
+    playSound(sound: string) {},
 
     setScene(slot: string, colorName: string) {
       let color = self.colors.get(colorName)
@@ -131,6 +121,9 @@ export let Board = model('Board', Schema)
     get uiScene() {
       return self.scene.map(s => s.ui)
     },
+
+    getSlot: (slot: string) => self.slots.get(slot),
+    getSound: (sound: string) => self.sounds.get(sound),
   }))
 
 export type BoardState = SnapshotIn<typeof Board>

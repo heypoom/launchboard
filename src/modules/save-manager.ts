@@ -28,6 +28,6 @@ export async function loadRemote(url: string, board: BoardModel) {
 export function loadFromSnapshot(snapshot: BoardState, board: BoardModel) {
   applySnapshot(board, snapshot)
 
-  board.slots.forEach(s => board.setupSlot(s.slot))
   board.sounds.forEach(s => board.addSound(s.name, s.src))
+  board.slots.forEach(s => board.setupSlot(s.slot))
 }
