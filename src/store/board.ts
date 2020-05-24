@@ -154,7 +154,7 @@ export let Board = model('Board', Schema)
     },
 
     syncFrameToScene() {
-      console.log('Frame', self.currentFrame, 'of', self.frames?.length)
+      console.log('Frame', self.currentFrame + 1, 'of', self.frames?.length)
 
       if (self.frame) self.scene.replace(self.frame)
     },
