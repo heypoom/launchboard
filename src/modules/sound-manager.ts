@@ -16,8 +16,6 @@ export class SoundManager {
   }
 
   onStoreUpdate(call: ISerializedActionCall) {
-    console.log('Store Update:', call)
-
     if (!call.path?.startsWith('/board')) return
 
     switch (call.name) {
@@ -34,9 +32,11 @@ export class SoundManager {
       }
 
       case 'play': {
-        const [name] = call.args as [string]
+        const match = call.path?.match('/sounds/(.*)')
+        if (!match) return
 
-        this.play(name)
+        const [_, sound] = match
+        this.play(sound)
       }
     }
   }

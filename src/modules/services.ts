@@ -5,6 +5,7 @@ import {SoundManager} from './sound-manager'
 
 import {BoardModel} from '../store/board'
 import {createStore, StoreModel} from '../store'
+import {save, load, loadRemote} from './save-manager'
 
 // Return all the dependent singleton services.
 interface Services {
@@ -18,6 +19,9 @@ interface Services {
 declare global {
   interface Window extends Services {
     board: BoardModel
+    save: typeof save
+    load: typeof load
+    loadRemote: typeof loadRemote
   }
 }
 
@@ -37,6 +41,11 @@ export function createServices(): Services {
     window.device = device
     window.deviceManager = deviceManager
     window.soundManager = soundManager
+
+    // Save and load utilities for debugging
+    window.save = () => save(store.board)
+    window.load = () => load(store.board)
+    window.loadRemote = (url: string) => loadRemote(url, store.board)
   }
 
   return {store, device, deviceManager, soundManager}

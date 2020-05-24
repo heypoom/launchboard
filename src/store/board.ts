@@ -7,6 +7,7 @@ import {Color, newColor} from './color'
 import {Animation} from './animation'
 
 import {range} from '../launchpad/utils'
+import {save} from '../modules/save-manager'
 
 const {model, map, array, reference, optional, maybeNull} = types
 
