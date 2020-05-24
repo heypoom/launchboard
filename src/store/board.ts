@@ -45,6 +45,12 @@ export let Board = model('Board', Schema)
       this.setupSlot(slot)
     },
 
+    deleteSlot(slot: string) {
+      self.slots.delete(slot)
+
+      this.setScene(slot, 'none')
+    },
+
     setupSlot(slot: string) {
       const config = self.slots.get(slot)
       if (!config) return
