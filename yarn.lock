@@ -7730,24 +7730,17 @@ mobx-devtools-mst@^0.9.22:
   resolved "https://registry.yarnpkg.com/mobx-devtools-mst/-/mobx-devtools-mst-0.9.22.tgz#51c7695064d78d31a9c416e7bc58c90a185575cc"
   integrity sha512-Yi0zoZjy/HcpIYQSttJfzjP8sWvSDxwtemGB99wSvKCSITvWk0CRCeT149Ynhud6sJ9XUgZMdsSAd/kIuZ8vOQ==
 
-mobx-react-lite@2:
+mobx-react-lite@^2.0.7:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-2.0.7.tgz#1bfb3b4272668e288047cf0c7940b14e91cba284"
   integrity sha512-YKAh2gThC6WooPnVZCoC+rV1bODAKFwkhxikzgH18wpBjkgTkkR9Sb0IesQAH5QrAEH/JQVmy47jcpQkf2Au3Q==
-
-mobx-react@^6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-6.2.2.tgz#45e8e7c4894cac8399bba0a91060d7cfb8ea084b"
-  integrity sha512-Us6V4ng/iKIRJ8pWxdbdysC6bnS53ZKLKlVGBqzHx6J+gYPYbOotWvhHZnzh/W5mhpYXxlXif4kL2cxoWJOplQ==
-  dependencies:
-    mobx-react-lite "2"
 
 mobx-state-tree@^3.16.0:
   version "3.16.0"
   resolved "https://registry.yarnpkg.com/mobx-state-tree/-/mobx-state-tree-3.16.0.tgz#814c5c87371ababc07d47bef3892ffa21d739e1d"
   integrity sha512-3eB3/h611fMNu5tvs7I09Hw9Njd0inJzuJMKaY7l49zbNVV6g1kh/poCu1AHZCA/s91N1rq+2VTv9FPo7wyjdA==
 
-mobx@^5.15.4:
+"mobx@^5.15.4 || ^4.15.4":
   version "5.15.4"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-5.15.4.tgz#9da1a84e97ba624622f4e55a0bf3300fb931c2ab"
   integrity sha512-xRFJxSU2Im3nrGCdjSuOTFmxVDGeqOHL+TyADCGbT0k4HHqGmx5u2yaHNryvoORpI4DfbzjJ5jPmuv+d7sioFw==
@@ -9743,7 +9736,7 @@ react-textarea-autosize@^7.1.0:
     "@babel/runtime" "^7.1.2"
     prop-types "^15.6.0"
 
-react@^16.8.3, react@^16.8.6:
+"react@^16.8.0 || 16.9.0-alpha.0", react@^16.8.3:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
   integrity sha512-YMZQQq32xHLX0bz5Mnibv1/LHb3Sqzngu7xstSM+vrkE5Kzr9xE0yMByK5kMoTK30YVJE61WfbxIFFvfeDKT1w==

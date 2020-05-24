@@ -1,19 +1,55 @@
 import {Howl} from 'howler'
+import {onAction, ISerializedActionCall} from 'mobx-state-tree'
+
+import {StoreModel} from '../store'
 
 export type SoundCacheMap = Record<string, Howl>
 
 export class SoundManager {
-  sounds: SoundCacheMap = {}
+  store: StoreModel
+  soundCache: SoundCacheMap = {}
+
+  constructor(store: StoreModel) {
+    this.store = store
+
+    onAction(store, this.onStoreUpdate.bind(this))
+  }
+
+  onStoreUpdate(call: ISerializedActionCall) {
+    console.log('Store Update:', call)
+
+    if (!call.path?.startsWith('/board')) return
+
+    switch (call.name) {
+      case 'setupPlaybackEnd': {
+        const [slot, sound, color] = call.args as [string, string, string]
+
+        return this.onEnd(sound, () => this.store.board.setScene(slot, color))
+      }
+
+      case 'addSound': {
+        const [name, src] = call.args as [string, string]
+
+        return this.load(name, {src})
+      }
+
+      case 'play': {
+        const [name] = call.args as [string]
+
+        this.play(name)
+      }
+    }
+  }
 
   load(name: string, config: IHowlProperties) {
-    if (this.sounds[name]) return
+    if (this.soundCache[name]) return
 
     let sound = new Howl(config)
-    this.sounds[name] = sound
+    this.soundCache[name] = sound
   }
 
   onEnd(name: string, onEnd: Function) {
-    let sound = this.sounds[name]
+    let sound = this.soundCache[name]
     if (!sound) return
 
     sound.off()
@@ -21,7 +57,7 @@ export class SoundManager {
   }
 
   play(name: string) {
-    let sound = this.sounds[name]
+    let sound = this.soundCache[name]
     if (!sound) return
 
     if (sound.playing()) sound.stop()
@@ -29,6 +65,3 @@ export class SoundManager {
     sound.play()
   }
 }
-
-export const soundManager = new SoundManager()
-window.sound = soundManager

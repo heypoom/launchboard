@@ -1,6 +1,4 @@
-import {types} from 'mobx-state-tree'
-
-import {soundManager} from '../modules/sound-manager'
+import {types, Instance} from 'mobx-state-tree'
 
 const {model, string, number, optional, identifier, boolean} = types
 
@@ -14,7 +12,7 @@ let Schema = {
  * Sound defines the sound that can be played.
  */
 export let Sound = model('Sound', Schema).actions(self => ({
-  play() {
-    soundManager.play(self.name)
-  },
+  play: () => {},
 }))
+
+export type SoundModel = Instance<typeof Sound>

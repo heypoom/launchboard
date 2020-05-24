@@ -1,17 +1,17 @@
 import {applySnapshot, getSnapshot} from 'mobx-state-tree'
 
-import {board} from '../store'
+import {BoardModel} from '../store/board'
 
 const CONFIG_KEY = 'launchboard.config'
 
-export function save() {
+export function save(board: BoardModel) {
   const saveString = JSON.stringify(getSnapshot(board))
   localStorage.setItem(CONFIG_KEY, saveString)
 
   return saveString
 }
 
-export function load() {
+export function load(board: BoardModel) {
   const saveString = localStorage.getItem(CONFIG_KEY)
   if (!saveString) return
 

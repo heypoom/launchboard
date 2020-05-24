@@ -17,6 +17,9 @@ import {
 import {Spec, InputGrid} from '../types/specs'
 import {DeviceHandler, DeviceListeners} from '../types/midi'
 
+/**
+ * High-level helper class to interface with the launchpad hardware.
+ */
 export class Launchpad {
   // Interface for the 64-button pressure-sensitive areas
   midiIn?: Input
@@ -270,5 +273,3 @@ export class Launchpad {
     Object.values(ControlCodes).forEach(code => this.light(code, 0))
   }
 }
-
-export const device = new Launchpad()

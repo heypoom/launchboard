@@ -1,4 +1,4 @@
-import {types} from 'mobx-state-tree'
+import {types, SnapshotIn, Instance} from 'mobx-state-tree'
 
 import {Slot} from './slot'
 import {Sound} from './sound'
@@ -7,11 +7,10 @@ import {Color, newColor} from './color'
 import {Animation} from './animation'
 
 import {range} from '../launchpad/utils'
-import {soundManager} from '../modules/sound-manager'
 
-const {model, map, array, reference, optional} = types
+const {model, map, array, reference, optional, maybeNull} = types
 
-const blank = range(0, 64).map(() => 'none')
+const blankScene = range(0, 64).map(() => 'none')
 
 interface SlotConfig {
   color?: string
@@ -22,13 +21,16 @@ interface SlotConfig {
 /**
  * Board defines the save state of the entire board.
  */
+let Scene = array(reference(Color))
+
 let Schema = {
   slots: map(Slot),
   colors: map(Color),
   sounds: map(Sound),
   keybind: map(Keybind),
   animations: map(Animation),
-  scene: optional(array(reference(Color)), blank),
+  animation: maybeNull(reference(Animation)),
+  scene: optional(Scene, blankScene),
 }
 
 export let Board = model('Board', Schema).actions(self => ({
@@ -52,8 +54,10 @@ export let Board = model('Board', Schema).actions(self => ({
     this.setScene(slot, color.name)
     if (!sound) return
 
-    soundManager.onEnd(sound.name, () => this.setScene(slot, color.name))
+    this.setupPlaybackEnd(slot, sound.name, color.name)
   },
+
+  setupPlaybackEnd: (slot: string, sound: string, color: string) => {},
 
   addColor(name: string, web: string, deviceSpec: number[]) {
     self.colors.put(newColor(name, web, deviceSpec))
@@ -61,25 +65,27 @@ export let Board = model('Board', Schema).actions(self => ({
 
   addSound(name: string, src: string) {
     self.sounds.put({name, src})
-
-    soundManager.load(name, {src})
   },
 
   trigger(slot: string) {
-    this.setScene(slot, 'red')
+    this.draw(slot)
 
     const config = self.slots.get(slot)
     if (!config) return
 
-    const {color, animation, sound} = config
-    sound?.play()
+    const {sound} = config
+
+    if (sound) {
+      this.setScene(slot, 'red')
+      sound.play()
+    }
   },
 
   setScene(slot: string, colorName: string) {
     let color = self.colors.get(colorName)
     if (!color) return
 
-    self.scene[slot] = color
+    self.scene[Number(slot)] = color
   },
 
   setKeybindColor(name: string, colorName: string) {
@@ -89,4 +95,35 @@ export let Board = model('Board', Schema).actions(self => ({
 
     key.color = color
   },
+
+  addAnimation(name: string = 'default') {
+    let animation = self.animations.put({name})
+
+    self.animation = animation
+  },
+
+  draw(slot: string) {
+    if (!self.animation) this.addAnimation()
+    if (!self.animation) return
+
+    let palette = self.animation.palette
+
+    let color = self.scene[Number(slot)]
+    if (!color) return
+
+    let id = (palette.indexOf(color) + 1) % palette.length
+    let next = palette[id]
+
+    this.setScene(slot, next.name)
+
+    self.animation.frames[0].replace(self.scene)
+  },
+
+  clearScene() {
+    let empty = range(0, 64).map(() => 'none')
+    self.scene.replace(empty)
+  },
 }))
+
+export type BoardState = SnapshotIn<typeof Board>
+export type BoardModel = Instance<typeof Board>
