@@ -20,7 +20,7 @@ const Button = styled.button`
   height: 80px;
   border: none;
 
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 25px ${props => props.color || 'rgba(255, 255, 255, 0.3)'};
 
   background: ${props => props.color || offColor};
 `
