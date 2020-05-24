@@ -27,6 +27,8 @@ declare global {
   }
 }
 
+const useDebugGlobals = true // process.env.NODE_ENV === 'development'
+
 export function createServices(): Services {
   // First, initialize the root store.
   const store = createStore()
@@ -40,7 +42,7 @@ export function createServices(): Services {
   addMiddleware(store.board, SoundMiddleware(soundManager, store.board))
 
   // Window global for DevTools debugging.
-  if (process.env.NODE_ENV === 'development') {
+  if (useDebugGlobals) {
     window.store = store
     window.board = store.board
     window.device = device
