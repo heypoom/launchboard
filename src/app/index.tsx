@@ -14,5 +14,5 @@ const Container = styled.div`
 `
 
 export function App() {
-  return <Container>Launchpad Controller.</Container>
+  return <Container></Container>
 }

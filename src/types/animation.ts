@@ -1,9 +1,9 @@
-import {DisplayTrait} from './specs'
+import {Spec} from './specs'
 
 export type Scene = number[]
 
 export interface Color {
   name: string
   web: string
-  device: DisplayTrait
+  device: Spec
 }

@@ -2,19 +2,14 @@ import {Launchpad} from '../launchpad'
 import {useTrait} from '../launchpad/specs'
 import {toNote} from '../launchpad/conversion'
 
-import {Scene, Color} from '../types/animation'
+import {Color} from '../types/animation'
 
-export function renderScene(
-  scene: Scene,
-  palette: Color[],
-  device: Launchpad,
-): string[] {
+export function renderScene(scene: Color[], device: Launchpad): string[] {
   let specs = []
   let webScene = []
 
   for (let slot = 1; slot <= 64; slot++) {
-    let cid = scene[slot]
-    let color = palette[cid]
+    let color = scene[slot]
     if (!color) continue
 
     let {web, device} = color

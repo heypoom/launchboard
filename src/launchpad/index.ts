@@ -14,7 +14,7 @@ import {
   useTrait,
 } from './specs'
 
-import {DisplayTrait, Spec, InputGrid} from '../types/specs'
+import {Spec, InputGrid} from '../types/specs'
 import {DeviceHandler, DeviceListeners} from '../types/midi'
 
 export class Launchpad {
@@ -78,6 +78,7 @@ export class Launchpad {
     this.initPorts()
     this.setupListeners()
     this.useProgrammerLayout()
+    this.resetControl()
     this.dispatch('ready')
 
     this.initialized = true
@@ -230,7 +231,7 @@ export class Launchpad {
    * @param note
    * @param trait
    */
-  display(note: number, trait: DisplayTrait) {
+  display(note: number, trait: Spec) {
     this.batch([useTrait(note, trait)])
   }
 
@@ -260,6 +261,13 @@ export class Launchpad {
    */
   fill(color: number | Spec = 0) {
     this.grid(buildFillGrid(color))
+  }
+
+  /**
+   * Reset the control lights.
+   */
+  resetControl() {
+    Object.values(ControlCodes).forEach(code => this.light(code, 0))
   }
 }
 

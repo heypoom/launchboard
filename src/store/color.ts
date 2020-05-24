@@ -7,7 +7,7 @@ const {model, string, array, number, identifier} = types
 /**
  * Color defines the color of the physical button and web interface.
  */
-export const Color = model('Color', {
+export let Color = model('Color', {
   name: identifier,
   web: string,
   device: array(number),

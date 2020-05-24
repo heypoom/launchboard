@@ -5,18 +5,19 @@ export type SoundCacheMap = Record<string, Howl>
 export class SoundManager {
   sounds: SoundCacheMap = {}
 
-  onPlaybackEnd = (slot: number, sound: string) => {}
+  load(name: string, config: IHowlProperties) {
+    if (this.sounds[name]) return
 
-  set(name: string, config: IHowlProperties) {
     let sound = new Howl(config)
     this.sounds[name] = sound
   }
 
-  assign(slot: number, name: string) {
+  onEnd(name: string, onEnd: Function) {
     let sound = this.sounds[name]
     if (!sound) return
 
-    sound.on('end', () => this.onPlaybackEnd(slot, name))
+    sound.off()
+    sound.on('end', onEnd)
   }
 
   play(name: string) {
@@ -28,3 +29,6 @@ export class SoundManager {
     sound.play()
   }
 }
+
+export const soundManager = new SoundManager()
+window.sound = soundManager

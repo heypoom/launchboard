@@ -1,19 +1,19 @@
 import {range} from './utils'
 
-import {DisplayTrait, Spec, InputGrid} from '../types/specs'
+import {Spec, InputGrid} from '../types/specs'
 
 // Fixed-color lights.
-export const Color = (color: number): DisplayTrait => [0, color % 128]
+export const Color = (color: number): Spec => [0, color % 128]
 
 // Flashing lights.
-export const Flash = (A: number, B: number): DisplayTrait => [1, A % 128, B % 128]
+export const Flash = (A: number, B: number): Spec => [1, A % 128, B % 128]
 
 // Pulsing lights.
-export const Pulse = (color: number): DisplayTrait => [2, color % 128]
+export const Pulse = (color: number): Spec => [2, color % 128]
 
 // RGB lights.
 // prettier-ignore
-export const RGB = (r: number, g: number, b: number): DisplayTrait =>
+export const RGB = (r: number, g: number, b: number): Spec =>
   [3, r % 128, g % 128, b % 128]
 
 /**
