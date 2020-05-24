@@ -6,11 +6,18 @@ import {Keybind} from './keybind'
 import {Color, newColor} from './color'
 import {Animation} from './animation'
 
-import {range} from '../launchpad/utils'
+import {blankScene} from '../constants/animations'
 
-const {model, map, array, reference, optional, maybeNull} = types
-
-const blankScene = range(0, 63).map(() => 'none')
+const {
+  model,
+  map,
+  array,
+  reference,
+  optional,
+  maybeNull,
+  number,
+  boolean,
+} = types
 
 interface SlotConfig {
   color?: string
@@ -31,9 +38,32 @@ let Schema = {
   animations: map(Animation),
   animation: maybeNull(reference(Animation)),
   scene: optional(Scene, blankScene),
+  currentFrame: optional(number, 0),
+  isAnimating: optional(boolean, false),
 }
 
+let timer: NodeJS.Timeout
+
 export let Board = model('Board', Schema)
+  .views(self => ({
+    get uiScene() {
+      return self.scene.map(s => s.ui)
+    },
+
+    get frames() {
+      return self.animation?.frames
+    },
+
+    get frame() {
+      if (!this.frames) return null
+      if (self.currentFrame >= this.frames.length) return null
+
+      return this.frames[self.currentFrame]
+    },
+
+    getSlot: (slot: string) => self.slots.get(slot),
+    getSound: (sound: string) => self.sounds.get(sound),
+  }))
   .actions(self => ({
     add(slot: string, color?: string, sound?: string, animation?: string) {
       this.addSlot(slot, {color, sound, animation})
@@ -84,7 +114,10 @@ export let Board = model('Board', Schema)
       let color = self.colors.get(colorName)
       if (!color) return
 
-      self.scene[Number(slot) - 1] = color
+      let id = Number(slot) - 1
+
+      self.scene[id] = color
+      if (self.frame) self.frame[id] = color
     },
 
     setKeybindColor(name: string, colorName: string) {
@@ -114,22 +147,70 @@ export let Board = model('Board', Schema)
       let next = palette[id]
 
       this.setScene(slot, next.name)
-
-      self.animation.frames[0].replace(self.scene)
     },
 
     clearScene() {
-      let empty = range(0, 63).map(() => 'none')
-      self.scene.replace(empty)
-    },
-  }))
-  .views(self => ({
-    get uiScene() {
-      return self.scene.map(s => s.ui)
+      self.scene.replace(blankScene)
     },
 
-    getSlot: (slot: string) => self.slots.get(slot),
-    getSound: (sound: string) => self.sounds.get(sound),
+    syncFrameToScene() {
+      if (!self.frame) return
+
+      self.scene.replace(self.frame)
+    },
+
+    syncSceneToFrame() {
+      self.frame?.replace(self.scene)
+    },
+
+    playAnimation() {
+      if (self.isAnimating) {
+        self.isAnimating = false
+        clearInterval(timer)
+        return
+      }
+
+      let fps = 5
+
+      self.isAnimating = true
+
+      timer = setInterval(this.tick.bind(this), 1000 / fps)
+    },
+
+    tick() {
+      if (!self.frames) return
+
+      if (self.currentFrame >= self.frames.length) self.currentFrame = 0
+
+      self.currentFrame++
+
+      console.log(`Tick. Frame ${self.currentFrame} of ${self.frames.length}`)
+
+      this.syncFrameToScene()
+    },
+
+    nextFrame() {
+      // this.syncSceneToFrame()
+
+      if (self.frames && self.currentFrame >= self.frames.length - 1) {
+        self.frames.push(blankScene)
+      }
+
+      self.currentFrame++
+
+      console.log('Frame', self.currentFrame, 'of', self.frames?.length)
+
+      this.syncFrameToScene()
+    },
+
+    prevFrame() {
+      // this.syncSceneToFrame()
+
+      if (self.currentFrame < 1) return
+      self.currentFrame--
+
+      this.syncFrameToScene()
+    },
   }))
 
 export type BoardState = SnapshotIn<typeof Board>

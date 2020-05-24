@@ -13,7 +13,7 @@ const Container = styled.div`
   padding: 100px 0;
 `
 
-let offColor = '#bdc3c7'
+let offColor = '#777e83'
 
 const Button = styled.button`
   width: 80px;

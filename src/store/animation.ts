@@ -2,15 +2,13 @@ import {types} from 'mobx-state-tree'
 
 import {Color} from './color'
 
-import {range} from '../launchpad/utils'
+import {blankScene} from '../constants/animations'
 
 const {model, array, reference, identifier, optional} = types
 
 const Scene = array(reference(Color))
 
 const defaultPalette = ['none', 'blue', 'pink', 'yellow']
-
-const blankScene = range(0, 63).map(() => 'none')
 
 /**
  * Animation defines the animation that can be triggered.

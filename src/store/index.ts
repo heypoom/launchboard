@@ -7,8 +7,9 @@ import '../modules/reactotron'
 
 import {Store} from './store'
 
-import {keybind} from '../constants/keybind'
 import {colors} from '../constants/colors'
+import {keybind} from '../constants/keybind'
+import {animations} from '../constants/animations'
 
 export type StoreState = SnapshotIn<typeof Store>
 export type StoreModel = Instance<typeof Store>
@@ -19,7 +20,8 @@ let initialState: StoreState = {
     keybind,
     slots: {},
     sounds: {},
-    animations: {},
+    animations,
+    animation: 'default',
   },
 }
 

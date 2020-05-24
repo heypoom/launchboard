@@ -16,6 +16,14 @@ export class DeviceManager {
   board: BoardModel
   device: Launchpad
 
+  actions: Record<string, Function> = {
+    play: () => this.board.playAnimation(),
+    next: () => this.board.nextFrame(),
+    prev: () => this.board.prevFrame(),
+  }
+
+  keyCodeCache = new Map<number, string>()
+
   constructor(device: Launchpad, board: BoardModel) {
     this.device = device
     this.board = board
@@ -30,6 +38,7 @@ export class DeviceManager {
     })
 
     device.on('padTouch', this.tap.bind(this))
+    device.on('controlChange', this.onControlChange.bind(this))
   }
 
   tap(note: number) {
@@ -38,13 +47,27 @@ export class DeviceManager {
     this.board.trigger(slot)
   }
 
+  onControlChange(note: number, velocity: number) {
+    if (velocity === 0) return
+
+    let action = this.keyCodeCache.get(note)
+    if (!action) return
+
+    let handler = this.actions[action]
+    if (handler) handler()
+  }
+
   handleSceneChange() {
     renderOnDevice(this.board.scene, this.device)
   }
 
   setupControls() {
+    this.keyCodeCache.clear()
+
     this.board.keybind.forEach(btn => {
       this.device.display(btn.keyCode, btn.color.device as Spec)
+
+      this.keyCodeCache.set(btn.keyCode, btn.name)
     })
   }
 }

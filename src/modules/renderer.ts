@@ -18,6 +18,8 @@ export function renderOnDevice(scene: Color[], device: Launchpad): string[] {
     specs.push(spec)
   }
 
+  console.debug(`renderOnDevice> Rendering`)
+
   device.batch(specs)
 }
 
