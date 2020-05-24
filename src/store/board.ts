@@ -154,9 +154,9 @@ export let Board = model('Board', Schema)
     },
 
     syncFrameToScene() {
-      if (!self.frame) return
+      console.log('Frame', self.currentFrame, 'of', self.frames?.length)
 
-      self.scene.replace(self.frame)
+      if (self.frame) self.scene.replace(self.frame)
     },
 
     syncSceneToFrame() {
@@ -180,32 +180,26 @@ export let Board = model('Board', Schema)
     tick() {
       if (!self.frames) return
 
-      if (self.currentFrame >= self.frames.length) self.currentFrame = 0
-
-      self.currentFrame++
-
-      console.log(`Tick. Frame ${self.currentFrame} of ${self.frames.length}`)
+      if (self.currentFrame > self.frames.length - 1) {
+        self.currentFrame = 0
+      }
 
       this.syncFrameToScene()
+
+      self.currentFrame++
     },
 
     nextFrame() {
-      // this.syncSceneToFrame()
-
       if (self.frames && self.currentFrame >= self.frames.length - 1) {
         self.frames.push(blankScene)
       }
 
       self.currentFrame++
 
-      console.log('Frame', self.currentFrame, 'of', self.frames?.length)
-
       this.syncFrameToScene()
     },
 
     prevFrame() {
-      // this.syncSceneToFrame()
-
       if (self.currentFrame < 1) return
       self.currentFrame--
 
