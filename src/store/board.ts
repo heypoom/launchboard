@@ -33,97 +33,103 @@ let Schema = {
   scene: optional(Scene, blankScene),
 }
 
-export let Board = model('Board', Schema).actions(self => ({
-  add(slot: string, color?: string, sound?: string, animation?: string) {
-    this.addSlot(slot, {color, sound, animation})
-  },
+export let Board = model('Board', Schema)
+  .actions(self => ({
+    add(slot: string, color?: string, sound?: string, animation?: string) {
+      this.addSlot(slot, {color, sound, animation})
+    },
 
-  addSlot(slot: string, config: SlotConfig) {
-    self.slots.put({slot, ...config})
+    addSlot(slot: string, config: SlotConfig) {
+      self.slots.put({slot, ...config})
 
-    this.setupSlot(slot)
-  },
+      this.setupSlot(slot)
+    },
 
-  setupSlot(slot: string) {
-    const config = self.slots.get(slot)
-    if (!config) return
+    setupSlot(slot: string) {
+      const config = self.slots.get(slot)
+      if (!config) return
 
-    const {color, sound} = config
-    if (!color) return
+      const {color, sound} = config
+      if (!color) return
 
-    this.setScene(slot, color.name)
-    if (!sound) return
+      this.setScene(slot, color.name)
+      if (!sound) return
 
-    this.setupPlaybackEnd(slot, sound.name, color.name)
-  },
+      this.setupPlaybackEnd(slot, sound.name, color.name)
+    },
 
-  setupPlaybackEnd: (slot: string, sound: string, color: string) => {},
+    setupPlaybackEnd: (slot: string, sound: string, color: string) => {},
 
-  addColor(name: string, web: string, deviceSpec: number[]) {
-    self.colors.put(newColor(name, web, deviceSpec))
-  },
+    addColor(name: string, ui: string, deviceSpec: number[]) {
+      self.colors.put(newColor(name, ui, deviceSpec))
+    },
 
-  addSound(name: string, src: string) {
-    self.sounds.put({name, src})
-  },
+    addSound(name: string, src: string) {
+      self.sounds.put({name, src})
+    },
 
-  trigger(slot: string) {
-    this.draw(slot)
+    trigger(slot: string) {
+      this.draw(slot)
 
-    const config = self.slots.get(slot)
-    if (!config) return
+      const config = self.slots.get(slot)
+      if (!config) return
 
-    const {sound} = config
+      const {sound} = config
 
-    if (sound) {
-      this.setScene(slot, 'red')
-      sound.play()
-    }
-  },
+      if (sound) {
+        this.setScene(slot, 'red')
+        sound.play()
+      }
+    },
 
-  setScene(slot: string, colorName: string) {
-    let color = self.colors.get(colorName)
-    if (!color) return
+    setScene(slot: string, colorName: string) {
+      let color = self.colors.get(colorName)
+      if (!color) return
 
-    self.scene[Number(slot)] = color
-  },
+      self.scene[Number(slot)] = color
+    },
 
-  setKeybindColor(name: string, colorName: string) {
-    let key = self.keybind.get(name)
-    let color = self.colors.get(colorName)
-    if (!key || !color) return
+    setKeybindColor(name: string, colorName: string) {
+      let key = self.keybind.get(name)
+      let color = self.colors.get(colorName)
+      if (!key || !color) return
 
-    key.color = color
-  },
+      key.color = color
+    },
 
-  addAnimation(name: string = 'default') {
-    let animation = self.animations.put({name})
+    addAnimation(name: string = 'default') {
+      let animation = self.animations.put({name})
 
-    self.animation = animation
-  },
+      self.animation = animation
+    },
 
-  draw(slot: string) {
-    if (!self.animation) this.addAnimation()
-    if (!self.animation) return
+    draw(slot: string) {
+      if (!self.animation) this.addAnimation()
+      if (!self.animation) return
 
-    let palette = self.animation.palette
+      let palette = self.animation.palette
 
-    let color = self.scene[Number(slot)]
-    if (!color) return
+      let color = self.scene[Number(slot)]
+      if (!color) return
 
-    let id = (palette.indexOf(color) + 1) % palette.length
-    let next = palette[id]
+      let id = (palette.indexOf(color) + 1) % palette.length
+      let next = palette[id]
 
-    this.setScene(slot, next.name)
+      this.setScene(slot, next.name)
 
-    self.animation.frames[0].replace(self.scene)
-  },
+      self.animation.frames[0].replace(self.scene)
+    },
 
-  clearScene() {
-    let empty = range(0, 64).map(() => 'none')
-    self.scene.replace(empty)
-  },
-}))
+    clearScene() {
+      let empty = range(0, 64).map(() => 'none')
+      self.scene.replace(empty)
+    },
+  }))
+  .views(self => ({
+    get uiScene() {
+      return self.scene.map(s => s.ui)
+    },
+  }))
 
 export type BoardState = SnapshotIn<typeof Board>
 export type BoardModel = Instance<typeof Board>

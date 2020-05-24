@@ -1,7 +1,7 @@
 import {autorun} from 'mobx'
 
 import {load} from './save-manager'
-import {renderScene} from './renderer'
+import {renderOnDevice} from './renderer'
 
 import {Spec} from '../types/specs'
 import {Launchpad} from '../launchpad'
@@ -38,7 +38,7 @@ export class DeviceManager {
   }
 
   handleSceneChange() {
-    renderScene(this.board.scene, this.device)
+    renderOnDevice(this.board.scene, this.device)
   }
 
   setupControls() {
