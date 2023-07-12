@@ -10,7 +10,7 @@
     "@types/node": "^12.0.2",
     "color": "^3.1.2",
     "howler": "^2.2.0",
-    "luxon": "^1.13.2",
+    "luxon": "^1.28.1",
     "mobx": "^5.15.4 || ^4.15.4",
     "mobx-devtools-mst": "^0.9.22",
     "mobx-react-lite": "^2.0.7",
